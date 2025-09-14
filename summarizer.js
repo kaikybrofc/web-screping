@@ -32,7 +32,10 @@ async function summarizeHtml(htmlContent) {
 
     console.log("   -> [Resumo] Enviando texto para a IA do Gemini...");
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-    const prompt = `Faça um resumo conciso da seguinte notícia, com no máximo 3 frases, focando no anúncio principal (como data, estúdio, etc):\n\n"${articleText}"`;
+    const prompt = `Resuma a seguinte notícia. 
+Destaque o anúncio principal (como data, estúdio, lançamento, etc.), 
+explique brevemente o contexto para melhor entendimento 
+e acrescente um comentário curto sobre a relevância ou possível impacto do anúncio:\n\n"${articleText}"`;
 
     const result = await model.generateContent(prompt);
     const summary = result.response.text();
