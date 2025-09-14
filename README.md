@@ -1,4 +1,9 @@
 
+
+<p align="center">
+   <img src="https://animenew.com.br/wp-content/uploads/2024/07/animenew.com_.br_.png" alt="AnimeNew Logo" width="300"/>
+</p>
+
 # Web Scraping e Resumo Automático de Notícias de Anime
 
 Este projeto realiza o monitoramento automático da página de notícias de animes do site [AnimeNew](https://animenew.com.br/noticias/animes/), detectando novas notícias e gerando resumos automáticos utilizando a API Gemini da Google (Google Generative AI). O objetivo é facilitar o acompanhamento das novidades do mundo dos animes, entregando resumos claros e rápidos de cada notícia publicada.
