@@ -1,3 +1,31 @@
+## Como adaptar para outros sites
+
+Você pode modificar este projeto para monitorar e resumir notícias de outros sites. Para isso, siga os passos abaixo:
+
+1. **Altere a URL monitorada:**
+   - No arquivo `web-monitor.js`, modifique o valor da constante `URL_TO_MONITOR` para a página de notícias desejada.
+
+2. **Ajuste o seletor de extração de texto:**
+   - No arquivo `summarizer.js`, edite a função `extractArticleText` para usar o seletor CSS correto do conteúdo principal do novo site.
+   - Utilize ferramentas de inspeção do navegador para identificar a classe, id ou tag que contém o texto da notícia.
+
+3. **Adapte a lógica de busca de links:**
+   - Se o novo site não usar o mesmo padrão de dados estruturados (JSON-LD), será necessário adaptar a lógica de extração de URLs das notícias em `web-monitor.js`.
+   - Você pode usar seletores do Cheerio para buscar links diretamente no HTML.
+
+4. **Teste e ajuste:**
+   - Execute o script e verifique se o texto está sendo extraído corretamente e se os resumos fazem sentido.
+   - Ajuste os seletores e lógica conforme necessário.
+
+Se precisar de ajuda para adaptar para um site específico, abra uma issue ou entre em contato!
+# AVISO DE USO E POLÍTICA
+
+> **Este projeto é destinado exclusivamente para fins de estudo, aprendizado e demonstração técnica.**
+>
+> - Não utilize este código para fins comerciais, automação em larga escala ou qualquer atividade que viole os Termos de Uso do site monitorado ou de terceiros.
+> - O uso de web scraping pode ser proibido por alguns sites. Sempre consulte e respeite a política de uso (Terms of Service/Política de Privacidade) do site alvo.
+> - O autor não se responsabiliza por qualquer uso indevido deste projeto.
+
 
 
 <p align="center">
@@ -70,8 +98,10 @@ No arquivo `web-monitor.js`, altere o valor da constante `CHECK_INTERVAL_MS` par
    - Verifique sua internet e se o site está online.
 
 ## Licença
-ISC
+MIT
 
 ---
 
-Desenvolvido por KaikyBroFC. Dúvidas ou sugestões? Abra uma issue!
+**Desenvolvido por [KaikyBroFC](https://github.com/kaikybrofc)**
+
+Dúvidas, sugestões ou colaborações? Abra uma issue ou entre em contato pelo GitHub!
