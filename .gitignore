@@ -1,3 +1,8 @@
-node_modules
+# Arquivos de configuração local e segredos
 .env
-latest_news.log
+
+# Dependências do Node
+node_modules/
+
+# Arquivos de log
+*.log
