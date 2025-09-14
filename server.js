@@ -1,19 +1,21 @@
 const express = require('express');
 const axios = require('axios');
 const cheerio = require('cheerio');
+const crypto = require('crypto'); // Importa o módulo de criptografia
 const { summarizeHtml } = require('./summarizer.js');
 
 // --- CONFIGURAÇÃO ---
 const URL_TO_MONITOR = 'https://animenew.com.br/noticias/animes/';
 const CHECK_INTERVAL_MS = 900000; // 15 minutos
+const EXPIRATION_TIME_MS = 24 * 60 * 60 * 1000; // 24 horas
+const CLEANUP_INTERVAL_MS = 60 * 60 * 1000; // 1 hora (para rodar a limpeza)
 const PORT = process.env.PORT || 3000;
 // --- FIM DA CONFIGURAÇÃO ---
 
 const app = express();
-const knownArticleUrls = new Set(); // Guarda todas as URLs que já vimos
-let processedArticles = []; // Guarda uma lista de todos os artigos processados
+const knownArticleUrls = new Set();
+let processedArticles = [];
 
-// Endpoint da API para servir a lista de notícias
 app.get('/api/latest-news', (req, res) => {
     if (processedArticles.length > 0) {
         res.json(processedArticles);
@@ -22,22 +24,19 @@ app.get('/api/latest-news', (req, res) => {
     }
 });
 
-/**
- * Recebe as informações de um artigo, busca seu HTML, gera o resumo
- * e retorna um objeto completo com todos os dados.
- * @param {object} articleInfo - O objeto do artigo vindo do JSON-LD.
- * @returns {Promise<object>} O objeto completo com dados refinados e brutos.
- */
 async function processArticle(articleInfo) {
     try {
         console.log(`   -> Processando: ${articleInfo.name}`);
         const articlePageResponse = await axios.get(articleInfo.url, {
             headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36' }
         });
-        const articleHtml = articlePageResponse.data;
-        const summary = await summarizeHtml(articleHtml);
+        const summary = await summarizeHtml(articlePageResponse.data);
+
+        // Gera um ID único baseado na URL
+        const id = crypto.createHash('sha1').update(articleInfo.url).digest('hex');
 
         return {
+            id: id, // Adiciona o ID único
             timestamp: new Date().toISOString(),
             refined: {
                 name: articleInfo.name,
@@ -48,7 +47,7 @@ async function processArticle(articleInfo) {
         };
     } catch (error) {
         console.error(`   -> Erro ao processar o artigo "${articleInfo.name}":`, error.message);
-        return null; // Retorna nulo se o processamento de um artigo falhar
+        return null;
     }
 }
 
@@ -76,21 +75,17 @@ async function checkPageForNews() {
             console.log('   -> Nenhuma ItemList encontrada.'); return;
         }
 
-        // Filtra para encontrar apenas os artigos que ainda não vimos
         const newArticles = itemList.filter(article => !knownArticleUrls.has(article.url));
 
         if (newArticles.length > 0) {
             const initialRun = knownArticleUrls.size === 0;
             console.log(`   -> ${initialRun ? 'Inicialização:' : 'Novas notícias detectadas:'} ${newArticles.length} artigo(s) para processar.`);
 
-            // Processa todos os novos artigos em paralelo
             const processingPromises = newArticles.map(processArticle);
-            const newlyProcessed = (await Promise.all(processingPromises)).filter(Boolean); // .filter(Boolean) remove os nulos de artigos que falharam
+            const newlyProcessed = (await Promise.all(processingPromises)).filter(Boolean);
 
             if (newlyProcessed.length > 0) {
-                // Adiciona os novos artigos processados no início da lista
                 processedArticles = [...newlyProcessed, ...processedArticles];
-                // Adiciona as URLs dos novos artigos à nossa lista de conhecidos
                 newlyProcessed.forEach(article => knownArticleUrls.add(article.refined.url));
                 console.log(`   -> ${newlyProcessed.length} artigo(s) adicionado(s) à API.`);
             }
@@ -103,9 +98,24 @@ async function checkPageForNews() {
     }
 }
 
+function cleanupExpiredArticles() {
+    const now = Date.now();
+    const originalCount = processedArticles.length;
+    processedArticles = processedArticles.filter(article => {
+        const articleAge = now - new Date(article.timestamp).getTime();
+        return articleAge < EXPIRATION_TIME_MS;
+    });
+    const removedCount = originalCount - processedArticles.length;
+    if (removedCount > 0) {
+        console.log(`[Manutenção] Removidos ${removedCount} artigo(s) expirado(s).`);
+    }
+}
+
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}. Acesse a API em http://localhost:${PORT}/api/latest-news`);
     console.log('Iniciando o monitoramento de notícias...');
-    checkPageForNews(); // Roda imediatamente ao iniciar
+    checkPageForNews();
     setInterval(checkPageForNews, CHECK_INTERVAL_MS);
+    // Inicia o processo de limpeza em background
+    setInterval(cleanupExpiredArticles, CLEANUP_INTERVAL_MS);
 });
