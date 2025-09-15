@@ -1,3 +1,7 @@
+<p align="center">
+   <img src="https://animenew.com.br/wp-content/uploads/2024/07/animenew.com_.br_.png" alt="AnimeNew Logo" width="300"/>
+</p>
+
 # AVISO DE USO E POLÍTICA
 
 > **Este projeto é destinado exclusivamente para fins de estudo, aprendizado e demonstração técnica.**
@@ -6,11 +10,6 @@
 > - O uso de web scraping pode ser proibido por alguns sites. Sempre consulte e respeite a política de uso (Terms of Service/Política de Privacidade) do site alvo.
 > - O autor não se responsabiliza por qualquer uso indevido deste projeto.
 
-
-
-<p align="center">
-   <img src="https://animenew.com.br/wp-content/uploads/2024/07/animenew.com_.br_.png" alt="AnimeNew Logo" width="300"/>
-</p>
 
 # Web Scraping e Resumo Automático de Notícias de Anime
 
