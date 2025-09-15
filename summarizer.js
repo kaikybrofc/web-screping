@@ -38,7 +38,15 @@ function summarizeHtml(htmlContent) {
         return "Não foi possível extrair o conteúdo para resumo.";
       }
 
-      console.log("   -> [Resumo] Enviando texto para a IA do Gemini...");
+      // Tenta extrair o título da notícia (primeira linha do texto ou heurística)
+      let titulo =
+        articleText.split("\n").find((l) => l.trim().length > 0) ||
+        "[Sem título detectado]";
+      if (titulo.length > 120) titulo = titulo.slice(0, 500) + "...";
+      console.log(`\n========== ENVIANDO PARA IA ==========`);
+      console.log(`Título: ${titulo}`);
+      console.log(`======================================\n`);
+
       const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       const prompt = `Resuma a seguinte notícia. 
 Destaque o anúncio principal (como data, estúdio, lançamento, etc.), 
@@ -48,6 +56,9 @@ e acrescente um comentário curto sobre a relevância ou possível impacto do an
       const result = await model.generateContent(prompt);
       const summary = result.response.text();
 
+      console.log("\n========== RESPOSTA DA IA ============");
+      console.log(summary);
+      console.log("======================================\n");
       console.log("   -> [Resumo] Resumo recebido.");
       return summary;
     } catch (error) {
