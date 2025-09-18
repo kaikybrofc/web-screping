@@ -3,17 +3,6 @@
 </p>
 
 
-# Projeto no GitHub
-
->[Repositório oficial no GitHub](https://github.com/kaikybrofc/web-screping)
-
-**Dados do repositório:**
-- Autor: [KaikyBroFC](https://github.com/kaikybrofc)
-- Licença: MIT
-- Linguagem principal: JavaScript
-- Última atualização: 2025
-- Issues, Pull Requests e contribuições abertas!
-
 # AVISO DE USO E POLÍTICA
 
 > **Este projeto é destinado exclusivamente para fins de estudo, aprendizado e demonstração técnica.**
@@ -108,6 +97,19 @@ No arquivo `web-monitor.js`, altere o valor da constante `CHECK_INTERVAL_MS` par
    - O layout do site pode ter mudado. Ajuste o seletor CSS em `summarizer.js`.
 - **Problemas de conexão:**
    - Verifique sua internet e se o site está online.
+
+
+# Projeto no GitHub
+
+>[Repositório oficial no GitHub](https://github.com/kaikybrofc/web-screping)
+
+**Dados do repositório:**
+- Autor: [KaikyBroFC](https://github.com/kaikybrofc)
+- Licença: MIT
+- Linguagem principal: JavaScript
+- Última atualização: 2025
+- Issues, Pull Requests e contribuições abertas!
+
 
 ## Licença
 MIT
