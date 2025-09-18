@@ -5,7 +5,7 @@ const { summarizeUrl } = require("./summarizer.js");
 
 // --- CONFIGURAÇÃO ---
 const URL_TO_MONITOR = "https://animenew.com.br/noticias/animes/";
-const CHECK_INTERVAL_MS = 900000; // Aumentado para 15 minutos para não sobrecarregar a API
+const CHECK_INTERVAL_MS = 43200000; // Atualizado para 12 horas (43.200.000 ms)
 const path = require("path");
 const LOG_FILE = path.resolve(__dirname, "latest_news.log");
 // --- FIM DA CONFIGURAÇÃO ---
@@ -14,7 +14,7 @@ let lastKnownTopArticleUrl = "";
 
 console.log(`Iniciando monitoramento de notícias em: ${URL_TO_MONITOR}`);
 console.log(`Verificando a cada ${CHECK_INTERVAL_MS / 1000 / 60} minutos.`);
-console.log(`A notícia mais recente e seu resumo serão salvos em: ${LOG_FILE}`);
+console.log(`Todos os resumos e um resumão serão salvos em: ${LOG_FILE}`);
 console.log(`Caminho absoluto do arquivo de log: ${LOG_FILE}`);
 
 const checkPageForNews = async () => {
@@ -57,50 +57,40 @@ const checkPageForNews = async () => {
       return;
     }
 
-    const topArticle = itemList[0];
-
-    if (lastKnownTopArticleUrl && topArticle.url !== lastKnownTopArticleUrl) {
-      console.log("NOVA NOTÍCIA ENCONTRADA!");
+    // Processa todos os itens da lista
+    let allSummaries = [];
+    let resumaoTextos = [];
+    for (const article of itemList) {
+      console.log(`Processando: ${article.name}`);
       let summary = "";
       try {
-        summary = await summarizeUrl(topArticle.url);
+        summary = await summarizeUrl(article.url);
       } catch (e) {
-        console.error("Erro ao resumir notícia:", e);
+        console.error(`Erro ao resumir notícia (${article.url}):`, e);
         summary = "[ERRO AO RESUMIR]";
       }
       const timestamp = new Date().toISOString();
-      let logEntry = `[${timestamp}] ${topArticle.name}\nURL: ${topArticle.url}\nRESUMO: ${summary}\n\n`;
-      try {
-        fs.appendFileSync(LOG_FILE, logEntry);
-        console.log(`Notícia e resumo salvos em ${LOG_FILE}`);
-      } catch (e) {
-        console.error("Erro ao escrever no arquivo de log:", e);
-      }
-    } else if (!lastKnownTopArticleUrl) {
-      console.log(
-        "Primeira execução: Armazenando e resumindo a notícia do topo."
-      );
-      console.log(`-> Notícia atual: ${topArticle.name}`);
-      let summary = "";
-      try {
-        summary = await summarizeUrl(topArticle.url);
-      } catch (e) {
-        console.error("Erro ao resumir notícia:", e);
-        summary = "[ERRO AO RESUMIR]";
-      }
-      const timestamp = new Date().toISOString();
-      let logEntry = `[${timestamp}] ${topArticle.name}\nURL: ${topArticle.url}\nRESUMO: ${summary}\n\n`;
-      try {
-        fs.appendFileSync(LOG_FILE, logEntry);
-        console.log(`Notícia inicial e resumo salvos em ${LOG_FILE}`);
-      } catch (e) {
-        console.error("Erro ao escrever no arquivo de log:", e);
-      }
-    } else {
-      console.log("Nenhuma notícia nova no topo da lista.");
+      let logEntry = `[${timestamp}] ${article.name}\nURL: ${article.url}\nRESUMO: ${summary}\n\n`;
+      allSummaries.push(logEntry);
+      resumaoTextos.push(`- ${article.name}: ${summary}`);
     }
 
-    lastKnownTopArticleUrl = topArticle.url;
+    // Gera o resumão geral
+    let resumao =
+      resumaoTextos.length > 0
+        ? resumaoTextos.join("\n")
+        : "Nenhum resumo gerado.";
+    let resumaoEntry = `========== RESUMÃO GERAL ==========\n${resumao}\n===================================\n\n`;
+
+    // Salva todos os resumos e o resumão no log
+    try {
+      fs.appendFileSync(LOG_FILE, allSummaries.join("") + resumaoEntry);
+      console.log(`Todos os resumos e o resumão salvos em ${LOG_FILE}`);
+    } catch (e) {
+      console.error("Erro ao escrever no arquivo de log:", e);
+    }
+    // Atualiza a última notícia conhecida
+    lastKnownTopArticleUrl = itemList[0].url;
   } catch (error) {
     console.error("Ocorreu um erro:", error);
   }
