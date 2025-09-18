@@ -2,6 +2,18 @@
    <img src="https://animenew.com.br/wp-content/uploads/2024/07/animenew.com_.br_.png" alt="AnimeNew Logo" width="300"/>
 </p>
 
+
+# Projeto no GitHub
+
+>[Repositório oficial no GitHub](https://github.com/kaikybrofc/web-screping)
+
+**Dados do repositório:**
+- Autor: [KaikyBroFC](https://github.com/kaikybrofc)
+- Licença: MIT
+- Linguagem principal: JavaScript
+- Última atualização: 2025
+- Issues, Pull Requests e contribuições abertas!
+
 # AVISO DE USO E POLÍTICA
 
 > **Este projeto é destinado exclusivamente para fins de estudo, aprendizado e demonstração técnica.**
@@ -16,10 +28,10 @@
 Este projeto realiza o monitoramento automático da página de notícias de animes do site [AnimeNew](https://animenew.com.br/noticias/animes/), detectando novas notícias e gerando resumos automáticos utilizando a API Gemini da Google (Google Generative AI). O objetivo é facilitar o acompanhamento das novidades do mundo dos animes, entregando resumos claros e rápidos de cada notícia publicada.
 
 ## Funcionalidades
-- Monitora periodicamente a página de notícias (intervalo padrão: 15 minutos).
-- Detecta automaticamente quando uma nova notícia é publicada.
-- Extrai o conteúdo principal da notícia usando web scraping (cheerio).
-- Gera um resumo conciso e objetivo via IA (Gemini API).
+- Monitora periodicamente a página de notícias (intervalo padrão: **12 horas**).
+- Busca **todos** os itens da lista de notícias a cada execução.
+- Gera um resumo individual para cada notícia via IA (Gemini API).
+- Cria e salva um **resumão geral** agregando todos os resumos individuais.
 - Salva o título, URL, data/hora e resumo em um arquivo de log (`latest_news.log`).
 - Fácil configuração e execução.
 
