@@ -14,5 +14,13 @@
     "express": "^5.1.0"
   },
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kaikybrofc/web-screping.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kaikybrofc/web-screping/issues"
+  },
+  "homepage": "https://github.com/kaikybrofc/web-screping#readme"
 }

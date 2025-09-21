@@ -2,6 +2,14 @@
    <img src="https://animenew.com.br/wp-content/uploads/2024/07/animenew.com_.br_.png" alt="AnimeNew Logo" width="300"/>
 </p>
 
+<p align="center">
+   <a href="https://github.com/kaikybrofc/web-screping"><img src="https://img.shields.io/github/v/release/kaikybrofc/web-screping?label=vers%C3%A3o" alt="Versão"></a>
+   <a href="https://github.com/kaikybrofc/web-screping"><img src="https://img.shields.io/github/license/kaikybrofc/web-screping" alt="Licença"></a>
+   <a href="https://github.com/kaikybrofc/web-screping"><img src="https://img.shields.io/github/languages/top/kaikybrofc/web-screping" alt="Linguagem"></a>
+   <a href="https://github.com/kaikybrofc/web-screping/issues"><img src="https://img.shields.io/github/issues/kaikybrofc/web-screping" alt="Issues abertas"></a>
+   <a href="https://github.com/kaikybrofc/web-screping/commits/main"><img src="https://img.shields.io/github/last-commit/kaikybrofc/web-screping" alt="Último commit"></a>
+</p>
+
 
 # AVISO DE USO E POLÍTICA
 
