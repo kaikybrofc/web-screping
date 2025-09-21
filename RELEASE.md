@@ -1,25 +1,25 @@
-# Release Notes - v1.0.1
+# Notas de Lançamento - v1.0.1
 
-**Release Date:** September 21, 2025
+**Data de Lançamento:** 21 de setembro de 2025
 
-This release introduces a major project refactoring, transforming the "web-monitor" into a more robust and scalable application. The key changes include the introduction of a dedicated API, a separate monitoring script, and several feature enhancements.
+Esta versão traz uma grande refatoração ao projeto, transformando o "web-monitor" em uma aplicação mais robusta e escalável. As principais mudanças incluem a introdução de uma API dedicada, um script de monitoramento separado e diversas melhorias de funcionalidades.
 
-## ✨ New Features
+## ✨ Novas Funcionalidades
 
-*   **Bulk Summarization:** The news monitoring functionality now supports bulk summarization, allowing for more efficient processing of multiple news articles at once.
-*   **Sequential AI Summarization:** To ensure stability and reliability, all AI-powered summarization requests are now processed sequentially.
+*   **Sumarização em Lote:** A funcionalidade de monitoramento de notícias agora suporta sumarização em lote, permitindo o processamento eficiente de múltiplos artigos de uma só vez.
+*   **Sumarização Sequencial por IA:** Para garantir estabilidade e confiabilidade, todas as requisições de sumarização por IA agora são processadas de forma sequencial.
 
-## 🚀 Improvements
+## 🚀 Melhorias
 
-*   **Enhanced Logging:** The logging mechanism for the Gemini summarization service has been significantly improved, providing more detailed and insightful information.
-*   **Monitoring Reliability:** The overall reliability of the monitoring script has been enhanced to prevent crashes and ensure continuous operation.
-*   **README:** The project's `README.md` has been updated with more detailed information, badges, and a better-organized structure.
+*   **Log Aprimorado:** O mecanismo de log do serviço de sumarização Gemini foi significativamente aprimorado, fornecendo informações mais detalhadas e úteis.
+*   **Confiabilidade do Monitoramento:** A confiabilidade geral do script de monitoramento foi melhorada para evitar falhas e garantir operação contínua.
+*   **README:** O `README.md` do projeto foi atualizado com informações mais detalhadas, badges e uma estrutura melhor organizada.
 
-## 🛠 Refactoring
+## 🛠 Refatoração
 
-*   **Project Structure:** The project has been refactored into a new structure, separating the core logic into three main components:
-    *   `src/api`: An Express.js API that exposes the summarization service.
-    *   `src/scripts`: A standalone script for monitoring web pages.
-    *   `src/services`: The core summarization service powered by the Gemini API.
-*   **Codebase:** The entire codebase has been modularized and improved for better readability, maintainability, and scalability.
+*   **Estrutura do Projeto:** O projeto foi refatorado para uma nova estrutura, separando a lógica principal em três componentes:
+    *   `src/api`: Uma API Express.js que expõe o serviço de sumarização.
+    *   `src/scripts`: Um script independente para monitoramento de páginas web.
+    *   `src/services`: O serviço central de sumarização alimentado pela API Gemini.
+*   **Base de Código:** Todo o código foi modularizado e aprimorado para melhor legibilidade, manutenção e escalabilidade.
 
