@@ -3,11 +3,14 @@
 </p>
 
 <p align="center">
-   <a href="https://github.com/kaikybrofc/web-screping"><img src="https://img.shields.io/github/v/release/kaikybrofc/web-screping?label=vers%C3%A3o" alt="Versão"></a>
-   <a href="https://github.com/kaikybrofc/web-screping"><img src="https://img.shields.io/github/license/kaikybrofc/web-screping" alt="Licença"></a>
-   <a href="https://github.com/kaikybrofc/web-screping"><img src="https://img.shields.io/github/languages/top/kaikybrofc/web-screping" alt="Linguagem"></a>
-   <a href="https://github.com/kaikybrofc/web-screping/issues"><img src="https://img.shields.io/github/issues/kaikybrofc/web-screping" alt="Issues abertas"></a>
-   <a href="https://github.com/kaikybrofc/web-screping/commits/main"><img src="https://img.shields.io/github/last-commit/kaikybrofc/web-screping" alt="Último commit"></a>
+   <a href="https://github.com/kaikybrofc"><img src="https://img.shields.io/badge/autor-KaikyBroFC-blue?style=for-the-badge" alt="Autor"></a>
+   <a href="https://github.com/kaikybrofc/web-screping"><img src="https://img.shields.io/github/v/release/kaikybrofc/web-screping?style=for-the-badge&label=vers%C3%A3o" alt="Versão"></a>
+   <a href="https://github.com/kaikybrofc/web-screping/blob/main/LICENSE"><img src="https://img.shields.io/github/license/kaikybrofc/web-screping?style=for-the-badge" alt="Licença"></a>
+   <a href="https://github.com/kaikybrofc/web-screping"><img src="https://img.shields.io/github/languages/top/kaikybrofc/web-screping?style=for-the-badge" alt="Linguagem"></a>
+   <a href="https://github.com/kaikybrofc/web-screping/commits/main"><img src="https://img.shields.io/github/last-commit/kaikybrofc/web-screping?style=for-the-badge" alt="Último commit"></a>
+   <a href="https://github.com/kaikybrofc/web-screping/issues"><img src="https://img.shields.io/github/issues/kaikybrofc/web-screping?style=for-the-badge" alt="Issues abertas"></a>
+   <a href="https://github.com/kaikybrofc/web-screping/pulls"><img src="https://img.shields.io/github/issues-pr/kaikybrofc/web-screping?style=for-the-badge" alt="Pull Requests abertos"></a>
+   <a href="https://github.com/kaikybrofc/web-screping/graphs/contributors"><img src="https://img.shields.io/badge/contribuições-bem--vindas-brightgreen?style=for-the-badge" alt="Contribuições"></a>
 </p>
 
 
@@ -22,15 +25,21 @@
 
 # Web Scraping e Resumo Automático de Notícias de Anime
 
-Este projeto realiza o monitoramento automático da página de notícias de animes do site [AnimeNew](https://animenew.com.br/noticias/animes/), detectando novas notícias e gerando resumos automáticos utilizando a API Gemini da Google (Google Generative AI). O objetivo é facilitar o acompanhamento das novidades do mundo dos animes, entregando resumos claros e rápidos de cada notícia publicada.
+Este projeto realiza o monitoramento automático da página de notícias de animes do site [AnimeNew](https://animenew.com.br/noticias/animes/), detectando novas notícias e gerando resumos automáticos utilizando a API Gemini da Google (Google Generative AI).
+
+O projeto agora é dividido em duas funcionalidades principais:
+1.  **API de Notícias**: Um servidor que monitora o site, processa as notícias e as expõe através de uma API REST.
+2.  **Script de Monitoramento**: Um script independente que monitora o site e salva os resumos em um arquivo de log.
 
 ## Funcionalidades
-- Monitora periodicamente a página de notícias (intervalo padrão: **12 horas**).
-- Busca **todos** os itens da lista de notícias a cada execução.
-- Gera um resumo individual para cada notícia via IA (Gemini API).
-- Cria e salva um **resumão geral** agregando todos os resumos individuais.
-- Salva o título, URL, data/hora e resumo em um arquivo de log (`latest_news.log`).
-- Fácil configuração e execução.
+- **API**:
+    - Monitora periodicamente a página de notícias.
+    - Gera um resumo para cada nova notícia via IA (Gemini API).
+    - Expõe as notícias processadas em um endpoint (`/api/latest-news`).
+    - Armazena as notícias em memória e remove as mais antigas (expiram em 24 horas).
+- **Script de Log**:
+    - Gera um resumo individual para cada notícia encontrada.
+    - Salva o título, URL, e resumo em um arquivo de log (`latest_news.log`).
 
 ## Pré-requisitos
 - Node.js (v16 ou superior recomendado)
@@ -50,77 +59,74 @@ Este projeto realiza o monitoramento automático da página de notícias de anim
 
 ## Como usar
 
-Execute o monitoramento com:
+### 1. API de Notícias
+Para iniciar o servidor da API, execute:
 ```bash
 npm start
 ```
-O script irá buscar a notícia mais recente, gerar um resumo e salvar no arquivo `latest_news.log`. A cada 15 minutos (configurável), ele verifica se há novidades e registra apenas notícias inéditas.
+O servidor irá iniciar e começar a monitorar o site. Você pode acessar as notícias processadas em:
+`http://localhost:3000/api/latest-news`
+
+### 2. Script de Log
+Se você deseja apenas salvar as notícias em um arquivo de log, execute o script diretamente:
+```bash
+node src/scripts/monitor-log.js
+```
+O script irá buscar as notícias, gerar os resumos e salvar no arquivo `latest_news.log`.
+
+## Estrutura do Projeto
+O projeto foi reorganizado para melhor clareza e manutenibilidade:
+```
+/
+├── src/
+│   ├── api/             # Código do servidor da API
+│   │   └── index.js     # Ponto de entrada da API (antigo server.js)
+│   │
+│   ├── services/        # Módulos e serviços reutilizáveis
+│   │   └── summarizer.js  # Lógica de resumo com a IA
+│   │
+│   └── scripts/         # Scripts independentes
+│       └── monitor-log.js # Script de monitoramento para log (antigo web-monitor.js)
+│
+├── .env                 # Arquivo para suas chaves de API (crie manualmente)
+├── latest_news.log      # Arquivo de log gerado pelo script (cria automaticamente)
+├── package.json
+└── README.md
+```
 
 ## Como adaptar para outros sites
 
 Você pode modificar este projeto para monitorar e resumir notícias de outros sites. Para isso, siga os passos abaixo:
 
-1. **Altere a URL monitorada:**
-   - No arquivo `web-monitor.js`, modifique o valor da constante `URL_TO_MONITOR` para a página de notícias desejada.
+1.  **Altere a URL monitorada:**
+    - No arquivo `src/api/index.js` (para a API) ou `src/scripts/monitor-log.js` (para o script de log), modifique o valor da constante `URL_TO_MONITOR`.
 
-2. **Ajuste o seletor de extração de texto:**
-   - No arquivo `summarizer.js`, edite a função `extractArticleText` para usar o seletor CSS correto do conteúdo principal do novo site.
-   - Utilize ferramentas de inspeção do navegador para identificar a classe, id ou tag que contém o texto da notícia.
+2.  **Ajuste o seletor de extração de texto:**
+    - No arquivo `src/services/summarizer.js`, edite a função `extractArticleText` para usar o seletor CSS correto do conteúdo principal do novo site.
 
-3. **Adapte a lógica de busca de links:**
-   - Se o novo site não usar o mesmo padrão de dados estruturados (JSON-LD), será necessário adaptar a lógica de extração de URLs das notícias em `web-monitor.js`.
-   - Você pode usar seletores do Cheerio para buscar links diretamente no HTML.
-
-4. **Teste e ajuste:**
-   - Execute o script e verifique se o texto está sendo extraído corretamente e se os resumos fazem sentido.
-   - Ajuste os seletores e lógica conforme necessário.
-
-Se precisar de ajuda para adaptar para um site específico, abra uma issue ou entre em contato!
-
-### Exemplo de entrada no arquivo de log:
-```
-[2025-09-13T12:34:56.789Z] Novo anime anunciado para 2026!
-URL: https://animenew.com.br/noticias/animes/novo-anime-2026
-RESUMO: O estúdio XYZ anunciou um novo anime previsto para 2026, com produção de grandes nomes do setor...
-```
-
-### Alterando o intervalo de checagem
-No arquivo `web-monitor.js`, altere o valor da constante `CHECK_INTERVAL_MS` para definir o intervalo desejado (em milissegundos).
-
-## Estrutura dos Arquivos
-- `web-monitor.js`: Script principal de monitoramento, detecção de novas notícias e logging.
-- `summarizer.js`: Responsável por extrair o texto do artigo e gerar o resumo via IA.
-- `latest_news.log`: Log das notícias resumidas (criado automaticamente).
-- `package.json`: Dependências e scripts do projeto.
-
-## Dicas e Observações
-- O seletor CSS para extração do texto principal está ajustado para o layout atual do site. Caso o site mude, edite a função `extractArticleText` em `summarizer.js`.
-- O uso da API Gemini pode gerar custos dependendo do volume de requisições. Consulte sua cota no painel do Google.
-- O script pode ser adaptado para monitorar outros sites, bastando ajustar a URL e o seletor de conteúdo.
+3.  **Adapte a lógica de busca de links:**
+    - Se o novo site não usar o mesmo padrão de dados estruturados (JSON-LD), será necessário adaptar a lógica de extração de URLs nos arquivos da API e/ou do script.
 
 ## Troubleshooting
 - **Erro: "A variável de ambiente GEMINI_API_KEY não foi definida."**
-   - Verifique se o arquivo `.env` está presente e corretamente preenchido.
+   - Verifique se o arquivo `.env` está na raiz do projeto e corretamente preenchido.
 - **Resumo não extraído corretamente:**
-   - O layout do site pode ter mudado. Ajuste o seletor CSS em `summarizer.js`.
-- **Problemas de conexão:**
-   - Verifique sua internet e se o site está online.
-
+   - O layout do site pode ter mudado. Ajuste o seletor CSS em `src/services/summarizer.js`.
 
 # Projeto no GitHub
 
 >[Repositório oficial no GitHub](https://github.com/kaikybrofc/web-screping)
 
 **Dados do repositório:**
-- Autor: [KaikyBroFC](https://github.com/kaikybrofc)
-- Licença: MIT
-- Linguagem principal: JavaScript
-- Última atualização: 2025
-- Issues, Pull Requests e contribuições abertas!
+- **Autor:** [KaikyBroFC](https://github.com/kaikybrofc) <a href="https://github.com/kaikybrofc"><img src="https://img.shields.io/badge/autor-KaikyBroFC-blue" alt="Autor"></a>
+- **Licença:** MIT <a href="https://github.com/kaikybrofc/web-screping/blob/main/LICENSE"><img src="https://img.shields.io/github/license/kaikybrofc/web-screping" alt="Licença"></a>
+- **Linguagem principal:** JavaScript <a href="https://github.com/kaikybrofc/web-screping"><img src="https://img.shields.io/github/languages/top/kaikybrofc/web-screping" alt="Linguagem"></a>
+- **Última atualização:** <a href="https://github.com/kaikybrofc/web-screping/commits/main"><img src="https://img.shields.io/github/last-commit/kaikybrofc/web-screping" alt="Último commit"></a>
+- **Issues, Pull Requests e contribuições abertas!** <a href="https://github.com/kaikybrofc/web-screping/issues"><img src="https://img.shields.io/github/issues/kaikybrofc/web-screping" alt="Issues abertas"></a> <a href="https://github.com/kaikybrofc/web-screping/pulls"><img src="https://img.shields.io/github/issues-pr/kaikybrofc/web-screping" alt="Pull Requests abertos"></a> <a href="https://github.com/kaikybrofc/web-screping/graphs/contributors"><img src="https://img.shields.io/badge/contribuições-bem--vindas-brightgreen" alt="Contribuições"></a>
 
 
 ## Licença
-MIT
+<a href="https://github.com/kaikybrofc/web-screping/blob/main/LICENSE"><img src="https://img.shields.io/github/license/kaikybrofc/web-screping?style=for-the-badge" alt="Licença"></a>
 
 ---
 

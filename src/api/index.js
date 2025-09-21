@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const crypto = require('crypto'); // Importa o módulo de criptografia
-const { summarizeHtml } = require('./summarizer.js');
+const { summarizeHtml } = require('../services/summarizer.js');
 
 // --- CONFIGURAÇÃO ---
 const URL_TO_MONITOR = 'https://animenew.com.br/noticias/animes/';

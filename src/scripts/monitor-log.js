@@ -1,7 +1,7 @@
 const axios = require("axios");
 const fs = require("fs");
 const cheerio = require("cheerio");
-const { summarizeUrl } = require("./summarizer.js");
+const { summarizeUrl } = require("../services/summarizer.js");
 
 // --- CONFIGURAÇÃO ---
 const URL_TO_MONITOR = "https://animenew.com.br/noticias/animes/";
