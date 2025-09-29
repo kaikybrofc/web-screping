@@ -16,7 +16,7 @@ const app = express();
 const knownArticleUrls = new Set();
 let processedArticles = [];
 
-app.get('/api/latest-news', (req, res) => {
+app.get('/', (req, res) => {
     if (processedArticles.length > 0) {
         res.json(processedArticles);
     } else {
@@ -112,7 +112,7 @@ function cleanupExpiredArticles() {
 }
 
 app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}. Acesse a API em http://localhost:${PORT}/api/latest-news`);
+    console.log(`Servidor rodando na porta ${PORT}.`);
     console.log('Iniciando o monitoramento de notícias...');
     checkPageForNews();
     setInterval(checkPageForNews, CHECK_INTERVAL_MS);
