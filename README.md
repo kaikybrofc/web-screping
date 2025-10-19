@@ -1,8 +1,8 @@
-# Web-Screping
+# News Anime Monitor
 
 **Versão:** 1.0.2
 
-`Web Screping` é um sistema de monitoramento e sumarização de notícias automatizado. Ele rastreia uma página de notícias, extrai novos artigos, utiliza a IA do Google Gemini para gerar resumos concisos e os expõe através de uma API local. Além disso, agora ele armazena as notícias processadas localmente para persistência de dados.
+`News Anime Monitor` é um sistema de monitoramento e sumarização de notícias automatizado. Ele rastreia uma página de notícias, extrai novos artigos, utiliza a IA do Google Gemini para gerar resumos concisos e os expõe através de uma API local. Além disso, agora ele armazena as notícias processadas localmente para persistência de dados.
 
 ## ✨ Funcionalidades Principais
 
@@ -26,8 +26,8 @@ Siga estas instruções para ter o projeto rodando em sua máquina local.
 
 1.  **Clone o repositório:**
     ```bash
-    git clone https://github.com/kaikybrofc/web-screping.git
-    cd web-screping
+    git clone https://github.com/kaikybrofc/news-anime-monitor.git
+    cd news-anime-monitor
     ```
 
 2.  **Instale as dependências:**

@@ -1,5 +1,5 @@
 {
-  "name": "web-monitor",
+  "name": "news-anime-monitor",
   "version": "1.0.2",
   "description": "A script to monitor a web page for changes.",
   "main": "src/api/index.js",
@@ -18,10 +18,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kaikybrofc/web-screping.git"
+    "url": "https://github.com/kaikybrofc/news-anime-monitor.git"
   },
   "bugs": {
-    "url": "https://github.com/kaikybrofc/web-screping/issues"
+    "url": "https://github.com/kaikybrofc/news-anime-monitor/issues"
   },
-  "homepage": "https://github.com/kaikybrofc/web-screping#readme"
+  "homepage": "https://github.com/kaikybrofc/news-anime-monitor#readme"
 }
