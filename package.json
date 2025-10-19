@@ -1,6 +1,6 @@
 {
   "name": "web-monitor",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A script to monitor a web page for changes.",
   "main": "src/api/index.js",
   "scripts": {
