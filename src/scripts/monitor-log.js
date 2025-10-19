@@ -1,7 +1,8 @@
 const axios = require("axios");
 const fs = require("fs");
-const cheerio = require("cheerio");
+const cheerio = "cheerio";
 const { summarizeUrl } = require("../services/summarizer.js");
+const logger = require("../utils/logger.js");
 
 // --- CONFIGURAÇÃO ---
 const URL_TO_MONITOR = "https://animenew.com.br/noticias/animes/";
@@ -12,14 +13,14 @@ const LOG_FILE = path.resolve(__dirname, "latest_news.log");
 
 let lastKnownTopArticleUrl = "";
 
-console.log(`Iniciando monitoramento de notícias em: ${URL_TO_MONITOR}`);
-console.log(`Verificando a cada ${CHECK_INTERVAL_MS / 1000 / 60} minutos.`);
-console.log(`Todos os resumos e um resumão serão salvos em: ${LOG_FILE}`);
-console.log(`Caminho absoluto do arquivo de log: ${LOG_FILE}`);
+logger.info(`Iniciando monitoramento de notícias em: ${URL_TO_MONITOR}`);
+logger.info(`Verificando a cada ${CHECK_INTERVAL_MS / 1000 / 60} minutos.`);
+logger.info(`Todos os resumos e um resumão serão salvos em: ${LOG_FILE}`);
+logger.info(`Caminho absoluto do arquivo de log: ${LOG_FILE}`);
 
 const checkPageForNews = async () => {
   try {
-    console.log("Buscando página e procurando por notícias...");
+    logger.info("Buscando página e procurando por notícias...");
     const response = await axios.get(URL_TO_MONITOR, {
       headers: {
         "User-Agent":
@@ -48,10 +49,10 @@ const checkPageForNews = async () => {
     });
 
     if (!itemList || itemList.length === 0) {
-      console.log(
+      logger.warn(
         'Não foi possível encontrar uma "ItemList" válida nos dados da página.'
       );
-      console.log(
+      logger.warn(
         "Verifique se a estrutura da página mudou ou se há bloqueio de acesso."
       );
       return;
@@ -61,12 +62,12 @@ const checkPageForNews = async () => {
     let allSummaries = [];
     let resumaoTextos = [];
     for (const article of itemList) {
-      console.log(`Processando: ${article.name}`);
+      logger.info(`Processando: ${article.name}`);
       let summary = "";
       try {
         summary = await summarizeUrl(article.url);
       } catch (e) {
-        console.error(`Erro ao resumir notícia (${article.url}):`, e);
+        logger.error(`Erro ao resumir notícia (${article.url}):`, e);
         summary = "[ERRO AO RESUMIR]";
       }
       const timestamp = new Date().toISOString();
@@ -85,14 +86,14 @@ const checkPageForNews = async () => {
     // Salva todos os resumos e o resumão no log
     try {
       fs.appendFileSync(LOG_FILE, allSummaries.join("") + resumaoEntry);
-      console.log(`Todos os resumos e o resumão salvos em ${LOG_FILE}`);
+      logger.success(`Todos os resumos e o resumão salvos em ${LOG_FILE}`);
     } catch (e) {
-      console.error("Erro ao escrever no arquivo de log:", e);
+      logger.error("Erro ao escrever no arquivo de log:", e);
     }
     // Atualiza a última notícia conhecida
     lastKnownTopArticleUrl = itemList[0].url;
   } catch (error) {
-    console.error("Ocorreu um erro:", error);
+    logger.error("Ocorreu um erro:", error);
   }
 };
 

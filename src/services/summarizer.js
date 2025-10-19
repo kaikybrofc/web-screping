@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const cheerio = require("cheerio");
+const logger = require("../utils/logger.js");
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
@@ -32,8 +33,8 @@ function summarizeHtml(htmlContent) {
       const articleText = extractArticleText(htmlContent);
 
       if (!articleText) {
-        console.log(
-          "   -> [Resumo] Não foi possível extrair o texto do artigo para resumir."
+        logger.warn(
+          "[Resumo] Não foi possível extrair o texto do artigo para resumir."
         );
         return "Não foi possível extrair o conteúdo para resumo.";
       }
@@ -43,11 +44,11 @@ function summarizeHtml(htmlContent) {
         articleText.split("\n").find((l) => l.trim().length > 0) ||
         "[Sem título detectado]";
       if (titulo.length > 120) titulo = titulo.slice(0, 500) + "...";
-      console.log(`\n========== ENVIANDO PARA IA ==========`);
-      console.log(`Título: ${titulo}`);
-      console.log(`======================================\n`);
+      logger.info(`\n========== ENVIANDO PARA IA ==========`);
+      logger.info(`Título: ${titulo}`);
+      logger.info(`======================================\n`);
 
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
       const prompt = `Resuma a seguinte notícia. 
 Destaque o anúncio principal (como data, estúdio, lançamento, etc.), 
 explique brevemente o contexto para melhor entendimento 
@@ -56,13 +57,13 @@ e acrescente um comentário curto sobre a relevância ou possível impacto do an
       const result = await model.generateContent(prompt);
       const summary = result.response.text();
 
-      console.log("\n========== RESPOSTA DA IA ============");
-      console.log(summary);
-      console.log("======================================\n");
-      console.log("   -> [Resumo] Resumo recebido.");
+      logger.info("\n========== RESPOSTA DA IA ============");
+      logger.info(summary);
+      logger.info("======================================\n");
+      logger.success("[Resumo] Resumo recebido.");
       return summary;
     } catch (error) {
-      console.error("   -> [Resumo] Erro ao gerar resumo:", error.message);
+      logger.error("[Resumo] Erro ao gerar resumo:", error.message);
       return "Ocorreu um erro durante o resumo.";
     }
   });
