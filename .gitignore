@@ -6,3 +6,4 @@ node_modules/
 
 # Arquivos de log
 *.log
+src/data/processed_articles.json

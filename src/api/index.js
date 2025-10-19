@@ -1,7 +1,9 @@
 const express = require('express');
 const axios = require('axios');
 const cheerio = require('cheerio');
-const crypto = require('crypto'); // Importa o módulo de criptografia
+const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 const { summarizeHtml } = require('../services/summarizer.js');
 const logger = require('../utils/logger.js');
 
@@ -9,13 +11,45 @@ const logger = require('../utils/logger.js');
 const URL_TO_MONITOR = 'https://animenew.com.br/noticias/animes/';
 const CHECK_INTERVAL_MS = 900000; // 15 minutos
 const EXPIRATION_TIME_MS = 24 * 60 * 60 * 1000; // 24 horas
-const CLEANUP_INTERVAL_MS = 60 * 60 * 1000; // 1 hora (para rodar a limpeza)
+const CLEANUP_INTERVAL_MS = 60 * 60 * 1000; // 1 hora
 const PORT = process.env.PORT || 3000;
+const DATA_FILE = path.resolve(__dirname, '..', 'data', 'processed_articles.json');
 // --- FIM DA CONFIGURAÇÃO ---
 
 const app = express();
 const knownArticleUrls = new Set();
 let processedArticles = [];
+
+// Garante que o diretório de dados exista
+const dataDir = path.dirname(DATA_FILE);
+if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+}
+
+function loadArticlesFromFile() {
+    try {
+        if (fs.existsSync(DATA_FILE)) {
+            const data = fs.readFileSync(DATA_FILE, 'utf8');
+            processedArticles = JSON.parse(data);
+            processedArticles.forEach(article => knownArticleUrls.add(article.refined.url));
+            logger.success(`Carregados ${processedArticles.length} artigos do cache local.`);
+        } else {
+            logger.info('Nenhum arquivo de cache local encontrado. Começando do zero.');
+        }
+    } catch (error) {
+        logger.error('Erro ao carregar ou analisar o arquivo de cache local:', error);
+        processedArticles = []; // Começa do zero se o arquivo estiver corrompido
+    }
+}
+
+function saveArticlesToFile() {
+    try {
+        fs.writeFileSync(DATA_FILE, JSON.stringify(processedArticles, null, 2), 'utf8');
+        logger.info(`Notícias salvas com sucesso em ${DATA_FILE}`);
+    } catch (error) {
+        logger.error('Erro ao salvar notícias no arquivo:', error);
+    }
+}
 
 app.get('/', (req, res) => {
     if (processedArticles.length > 0) {
@@ -33,11 +67,10 @@ async function processArticle(articleInfo) {
         });
         const summary = await summarizeHtml(articlePageResponse.data);
 
-        // Gera um ID único baseado na URL
         const id = crypto.createHash('sha1').update(articleInfo.url).digest('hex');
 
         return {
-            id: id, // Adiciona o ID único
+            id: id,
             timestamp: new Date().toISOString(),
             refined: {
                 name: articleInfo.name,
@@ -89,6 +122,7 @@ async function checkPageForNews() {
                 processedArticles = [...newlyProcessed, ...processedArticles];
                 newlyProcessed.forEach(article => knownArticleUrls.add(article.refined.url));
                 logger.success(`${newlyProcessed.length} artigo(s) adicionado(s) à API.`);
+                saveArticlesToFile(); // Salva após adicionar novos artigos
             }
 
         } else {
@@ -109,14 +143,15 @@ function cleanupExpiredArticles() {
     const removedCount = originalCount - processedArticles.length;
     if (removedCount > 0) {
         logger.info(`[Manutenção] Removidos ${removedCount} artigo(s) expirado(s).`);
+        saveArticlesToFile(); // Salva após a limpeza
     }
 }
 
 app.listen(PORT, () => {
     logger.success(`Servidor rodando na porta ${PORT}.`);
+    loadArticlesFromFile(); // Carrega os artigos ao iniciar
     logger.info('Iniciando o monitoramento de notícias...');
     checkPageForNews();
     setInterval(checkPageForNews, CHECK_INTERVAL_MS);
-    // Inicia o processo de limpeza em background
     setInterval(cleanupExpiredArticles, CLEANUP_INTERVAL_MS);
 });
