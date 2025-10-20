@@ -4,7 +4,9 @@
   "description": "A script to monitor a web page for changes.",
   "main": "src/api/index.js",
   "scripts": {
-    "start": "node src/api/index.js"
+    "start": "node src/api/index.js",
+    "start:pm2": "pm2 start ecosystem.config.js --env production",
+    "pm2:logs": "pm2 logs news-anime-monitor --lines 200"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
